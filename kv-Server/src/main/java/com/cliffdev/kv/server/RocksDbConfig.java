@@ -51,6 +51,7 @@ public class RocksDbConfig {
     @Bean("master")
     public   RocksDB intMasterRocksdb() throws RocksDBException{
         Options options = getOptions();
+        RocksDB.loadLibrary();
         final RocksDB db = RocksDB.open(options, masterDir);
         return db;
     }
@@ -69,7 +70,5 @@ public class RocksDbConfig {
         final RocksDB db = RocksDB.open(options, thirdDir);
         return db;
     }
-
-
 
 }

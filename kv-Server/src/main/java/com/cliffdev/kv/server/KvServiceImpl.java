@@ -143,7 +143,7 @@ public class KvServiceImpl implements KvService {
     }
 
     @Override
-    public KvResponse<Boolean> batchDelete(String database, BatchKey batchKey) throws Exception {
+    public KvResponse<Boolean> batchDelete(String database, BatchKey batchKey) {
         KvResponse<Boolean> response = new KvResponse<>();
         KvStore kvStore = kvManager.getKvStore(database);
         if (kvStore == null){

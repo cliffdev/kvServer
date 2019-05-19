@@ -3,16 +3,12 @@ package com.cliffdev.kv.server;
 
 import com.cliffdev.kv.contract.KvService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.caucho.HessianServiceExporter;
 import org.springframework.remoting.rmi.RmiRegistryFactoryBean;
 import org.springframework.remoting.rmi.RmiServiceExporter;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
-import java.util.Properties;
 
 @Configuration
 public class ApiConfig {
