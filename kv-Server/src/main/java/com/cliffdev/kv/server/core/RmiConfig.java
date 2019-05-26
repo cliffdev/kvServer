@@ -1,4 +1,4 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.core;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

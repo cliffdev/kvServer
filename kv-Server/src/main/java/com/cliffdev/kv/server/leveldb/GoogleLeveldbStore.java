@@ -1,30 +1,29 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.leveldb;
 
 import com.cliffdev.kv.contract.BatchKey;
 import com.cliffdev.kv.contract.BatchKv;
 import com.cliffdev.kv.contract.Item;
-import org.rocksdb.RocksDB;
-import org.rocksdb.WriteBatch;
-import org.rocksdb.WriteOptions;
+import com.cliffdev.kv.server.core.KvStore;
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.WriteBatch;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-
-public class RocksdbStore implements KvStore {
+public  class GoogleLeveldbStore implements KvStore {
 
     Charset defaultCharset = Charset.forName("utf-8");
 
-    private RocksDB rocksDB;
+    private DB db;
 
-    public RocksdbStore(RocksDB rocksDB){
-        this.rocksDB = rocksDB;
+    public GoogleLeveldbStore(DB db){
+        this.db = db;
     }
 
     @Override
     public String get(String key) throws Exception {
-        return valueToString(rocksDB.get(key.getBytes(defaultCharset)));
+        return valueToString(db.get(key.getBytes(defaultCharset)));
     }
     private String valueToString(byte [] b){
         if(b != null){
@@ -50,39 +49,38 @@ public class RocksdbStore implements KvStore {
 
     @Override
     public boolean put(String key, String value) throws Exception {
-        rocksDB.put(key.getBytes(defaultCharset),value.getBytes(defaultCharset));
+        db.put(key.getBytes(defaultCharset),value.getBytes(defaultCharset));
         return true;
     }
 
     @Override
     public boolean delete(String key) throws Exception{
-        rocksDB.delete(key.getBytes(defaultCharset));
+        db.delete(key.getBytes(defaultCharset));
         return true;
     }
 
     @Override
     public boolean batchPut(BatchKv batchKv) throws Exception{
-        WriteOptions writeOptions = new WriteOptions();
-        writeOptions.setSync(false);
-        WriteBatch writeBatch = new WriteBatch();
-        for(Item item:batchKv.getItems()) {
-            if(item.getKey() !=null && item.getValue() != null) {
-                writeBatch.put(item.getKey().getBytes(defaultCharset), item.getValue().getBytes(defaultCharset));
+        try( WriteBatch writeBatch = db.createWriteBatch()) {
+            for (Item item : batchKv.getItems()) {
+                if (item.getKey() != null && item.getValue() != null) {
+                    writeBatch.put(item.getKey().getBytes(defaultCharset), item.getValue().getBytes(defaultCharset));
+                }
             }
+            db.write(writeBatch);
         }
-        rocksDB.write(writeOptions,writeBatch);
+
         return true;
     }
 
     @Override
     public boolean batchDelete(BatchKey batchKey) throws Exception {
-        WriteOptions writeOptions = new WriteOptions();
-        writeOptions.setSync(false);
-        WriteBatch writeBatch = new WriteBatch();
-        for(String item:batchKey.getKeys()) {
-            writeBatch.delete(item.getBytes(defaultCharset));
+        try( WriteBatch writeBatch = db.createWriteBatch()) {
+            for (String item : batchKey.getKeys()) {
+                writeBatch.delete(item.getBytes(defaultCharset));
+            }
+            db.write(writeBatch);
         }
-        rocksDB.write(writeOptions,writeBatch);
         return true;
     }
 }

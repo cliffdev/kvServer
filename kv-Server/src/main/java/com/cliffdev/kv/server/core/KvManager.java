@@ -1,4 +1,4 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -13,5 +13,6 @@ public class KvManager {
     public   KvStore  getKvStore(String database){
         return applicationContext.getBean("kvStore_"+database,KvStore.class);
     }
+
 
 }

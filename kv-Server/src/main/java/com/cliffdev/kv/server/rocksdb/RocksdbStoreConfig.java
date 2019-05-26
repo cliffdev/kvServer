@@ -1,13 +1,16 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.rocksdb;
 
+import com.cliffdev.kv.server.core.KvStore;
 import org.rocksdb.RocksDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StoreConfig {
+@ConditionalOnProperty(name="kv.store.rocksdb", havingValue="true")
+public class RocksdbStoreConfig {
 
     @Qualifier("master")
     @Autowired
@@ -21,8 +24,9 @@ public class StoreConfig {
     @Autowired
     private RocksDB third;
 
+
     @Bean("kvStore_master")
-    public   KvStore initMasterStoreImpl()   {
+    public KvStore initMasterStoreImpl()   {
         KvStore kvStore = new RocksdbStore(master);
         return kvStore;
     }

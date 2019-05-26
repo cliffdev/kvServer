@@ -1,13 +1,16 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.rocksdb;
 
 import org.rocksdb.*;
 import org.rocksdb.util.SizeUnit;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.File;
 
 @Configuration
+@ConditionalOnProperty(name="kv.store.rocksdb", havingValue="true")
 public class RocksDbConfig {
 
     static {
@@ -51,7 +54,7 @@ public class RocksDbConfig {
     @Bean("master")
     public   RocksDB intMasterRocksdb() throws RocksDBException{
         Options options = getOptions();
-        RocksDB.loadLibrary();
+        createDir(masterDir);
         final RocksDB db = RocksDB.open(options, masterDir);
         return db;
     }
@@ -59,14 +62,22 @@ public class RocksDbConfig {
     @Bean("second")
     public   RocksDB intSecondRocksdb() throws RocksDBException{
         Options options = getOptions();
+        createDir(secondDir);
         final RocksDB db = RocksDB.open(options, secondDir);
         return db;
     }
 
+    private void createDir(String dir){
+        File file = new File(dir);
+        if(!file.exists() || !file.isDirectory()){
+            file.mkdirs();
+        }
+    }
 
     @Bean("third")
     public   RocksDB initThirdRocksdb() throws RocksDBException{
         Options options = getOptions();
+        createDir(thirdDir);
         final RocksDB db = RocksDB.open(options, thirdDir);
         return db;
     }

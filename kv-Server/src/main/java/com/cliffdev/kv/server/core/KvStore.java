@@ -1,4 +1,4 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.core;
 
 import com.cliffdev.kv.contract.BatchKey;
 import com.cliffdev.kv.contract.BatchKv;

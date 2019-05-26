@@ -1,4 +1,4 @@
-package com.cliffdev.kv.server;
+package com.cliffdev.kv.server.core;
 
 import com.cliffdev.kv.contract.*;
 import lombok.extern.slf4j.Slf4j;
